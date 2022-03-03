@@ -2,4 +2,67 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+}
+
+body{
+    background-color: black;
+}
+
+.score{
+    position: fixed;
+    padding-left: 1rem;
+    padding-top: 1rem;
+    color: white;
+}
+
+.fixed{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ee4540;
+    padding-bottom: 1rem;
+}
+
+.bg-white{
+    background-color: #2d142c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 10rem;
+    text-align: center;
+}
+
+#bold-score{
+    font-size: 3rem;
+    margin-bottom: -1.2rem;
+}
+
+.points{
+    color: #801336;
+    margin-bottom: 1rem;
+}
+
+button{
+    border: none;
+    padding: 0.5rem 4rem;
+    background-color: #c72c41;
+    border-radius: 30px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: 0.2s;
+}
+
+button:hover{
+    cursor: pointer;
+    scale: 1.2;
+}
+
+.modalEl{
+    display: flex;
 }

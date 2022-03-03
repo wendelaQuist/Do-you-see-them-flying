@@ -4,6 +4,10 @@ const c = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight; 
 
+const scoreEl = document.querySelector('#scoreEl');
+const startGameBtn = document.querySelector('#startGameBtn');
+const modalEl = document.querySelector('#modalEl');
+const boldScore = document.querySelector('#bold-score');
 class Player {
     constructor(x, y, radius, color) {
         this.x      = x
@@ -115,8 +119,8 @@ function spawnEnemies() {
         let y;
 
         if(Math.random() < 0.5) {
-        x         = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
-        y         = Math.random() * canvas.height;
+            x         = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+            y         = Math.random() * canvas.height;
         }
         else{
             x         = Math.random() * canvas.width;
@@ -133,6 +137,7 @@ function spawnEnemies() {
 }
 
 let animationId;
+let score = 0;
 
 function animate() {
     animationID = requestAnimationFrame(animate);
@@ -166,26 +171,34 @@ function animate() {
             const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
 
             if(dist - enemy.radius - player.radius < 1){ // Enemy collides with player
-                cancelAnimationFrame(animationID);
+                cancelAnimationFrame(animationID); // stop game  
+                modalEl.style.display = 'flex'; 
+                boldScore.innerHTML = score;   
             }
 
             projectiles.forEach((projectile, projectileIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
             
-            if(dist - enemy.radius - projectile.radius < 1) {
+            if(dist - enemy.radius - projectile.radius < 1) { // if a projectile hits an enemy
 
-                for (let i=0; i < 8; i ++){ // create explosion
-                    particles.push(new Particle(projectile.x, projectile.y, 3, enemy.color, {x: Math.random() - 0.5, y:Math.random() - 0.5}));
+                for (let i=0; i < enemy.radius * 2; i ++){ // create explosion
+                    particles.push(new Particle(projectile.x, projectile.y, Math.random() * 2, enemy.color, {x: (Math.random() - 0.5) * (Math.random() * 7), y: (Math.random() - 0.5) * (Math.random() * 7)}));
                 }
 
-                if (enemy.radius - 10 > 10) {
+                if (enemy.radius - 10 > 5) {
+
+                    score += 100;//add to score
+                    scoreEl.innerHTML = score;
+
                     enemy.radius -= 10;
                     setTimeout (() => {
                         projectiles.splice(projectileIndex, 1);
                     }, 0)
                 }
-                else{
+                else{ //remove whole projectile
                     setTimeout (() => {
+                        score += 250;
+                        scoreEl.innerHTML = score;
                         enemies.splice(index, 1);
                         projectiles.splice(projectileIndex, 1);
                     }, 0)
@@ -196,11 +209,12 @@ function animate() {
 }
 
 addEventListener('click', (event) => {
-    console.log(projectiles);
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
     const velocity = {x: Math.cos(angle) * 5, y: Math.sin(angle) * 5};
     projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, 'white', velocity))
 })
-
-animate();
-spawnEnemies();
+startGameBtn.addEventListener('click', () => {
+    animate();
+    spawnEnemies();
+    modalEl.style.display = 'none';
+})
